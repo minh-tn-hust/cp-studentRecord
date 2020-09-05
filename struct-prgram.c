@@ -1,18 +1,24 @@
 #include <stdio.h>
+#include <string.h>
 FILE *f;
 char s; 
 struct student{
 	char  ID[15];
 	char name[50];
-	char address[20];
+	char address[50];
 	char phoneNumber[20];
 };
-
-
-
-
+int numberOfStudent;
 struct student stuList[100];
-int load(){
+// Hàm in ra thông tin thí sinh, cần bỏ vào trong thư viện để dễ dàng gọi ===========================================
+int printStu(struct student *s){
+	printf("%20s%50s%50s%20s\n",s->ID,s->name,s->address,s->phoneNumber);
+}
+//==================================================================================================================
+
+
+
+int load(){ // Đã chạy ổn định
 	f = fopen("student.txt","a+");
 	int count = 0;
 	if (f == NULL) printf("Loading fail\n");
@@ -30,43 +36,68 @@ int load(){
 	return count;
 	}
 }
-int deleteStudent(){
+int deleteRecord(){
 	if (s == EOF) {
 	printf("Empty Database\n");
 	return 1;
 	}
 	else{
 	system("rm student.txt");
-
 	}
 }
 int modStudent(){
+	system("clear");
 	if (s == EOF) {
 	printf("Empty Database\n");
 	return 1;
 	}
 	else{
-
+		int count;
+		for (count =0; count < numberOfStudent; count++){
+			printStu(&stuList[count]);
+		}
+		char c;
+		scanf("%c",&c);
+		char ID[15];
+		printf("Nhap ID ban muon chinh sua");gets(ID);
 	}
 }
-int searchStudent(){
+int searchStudent(){// chạy thành công -- chờ nâng cấp ==============================================
+	char c;
+	scanf("%c",&c);
 	if (s == EOF) {
 	printf("Empty Database\n");
 	return 1;
 	}
 	else{
+	system("clear");
+	char	ID[15];
+	int check = 0;
+	printf("Nhap ID:");gets(ID);
+	int count;
+	for (count = 0; count < numberOfStudent; count++)
+		if (strcmp(ID,stuList[count].ID) == 0){
+			printStu(&stuList[count]);
+			check = 1;
+		}
+	if (check == 0) printf("Not found");
 
 	}
 }
+//==================================================================================================
+
+
+
 int addStudent(){// add thì mình thêm vào mảng listStudent và thêm vào cả trong student.txt
 	scanf("%*c");
 	struct student stu;
 	system("clear");
-	char name[20];
+	char name[50];
 	printf("Name: ");gets(stu.name);
-	char id[20];
+	char id[30];
 	printf("ID: ");gets(stu.ID);
-	char address[20];
+	// Ở đây cần có một hàm để check ID
+	char address[50];
 	printf("Address: ");gets(stu.address);
 	char phoneNumber[20];
 	printf("Phone number: ");gets(stu.phoneNumber);
@@ -79,9 +110,6 @@ int markSheet(){
 }
 int changePassword(){
 
-}
-int printStu(struct student *s){
-	printf("%20s%20s%20s%20s\n",s->ID,s->name,s->address,s->phoneNumber);
 }
 int menu(){
 	while(1){
@@ -100,14 +128,14 @@ int menu(){
 			case 2:searchStudent();break;
 			case 3:modStudent();break;
 			case 4:markSheet();break;
-			case 5:deleteStudent();break;
+			case 5:deleteRecord();break;
 			case 6:changePassword();break;
 			case 7: return 1;
 		}
 	}
 }
 int main(void){
-	int numberOfStudent = load();
+	numberOfStudent = load();
 	if (s == EOF) {
 		printf("Empty Database\n");
 	}
