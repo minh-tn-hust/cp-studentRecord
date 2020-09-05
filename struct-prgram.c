@@ -19,7 +19,7 @@ int printStu(struct student *s){
 
 
 int load(){ // Đã chạy ổn định
-	f = fopen("student.txt","a+");
+	f = fopen("student.txt","r+");
 	int count = 0;
 	if (f == NULL) printf("Loading fail\n");
 	else {
@@ -42,10 +42,19 @@ int deleteRecord(){
 	return 1;
 	}
 	else{
-	system("rm student.txt");
+		int count;
+		for (count =0; count < numberOfStudent; count++){
+			printStu(&stuList[count]);
+		}
+		char c;
+		scanf("%*c");
+		char ID[15];
+		printf("Nhap ID ban muon xong");gets(ID);
+
 	}
 }
-int modStudent(){
+
+int modStudent(){// chạy ổn định, chưa thấy lỗi nào cả==========================================================
 	system("clear");
 	if (s == EOF) {
 	printf("Empty Database\n");
@@ -57,11 +66,33 @@ int modStudent(){
 			printStu(&stuList[count]);
 		}
 		char c;
-		scanf("%c",&c);
+		scanf("%*c");
 		char ID[15];
 		printf("Nhap ID ban muon chinh sua");gets(ID);
+		for (count = 0; count < numberOfStudent; count++){
+			if (strcmp(ID,stuList[count].ID) == 0 ) {
+				system("clear");
+				char name[50];
+				printf("Name: ");gets(stuList[count].name);
+				// Ở đây cần có một hàm để check ID
+				char address[50];
+				printf("Address: ");gets(stuList[count].address);
+				char phoneNumber[20];
+				printf("Phone number: ");gets(stuList[count].phoneNumber);
+				break;
+			}
+		}
+		fseek(f,0,SEEK_SET);
+		fseek(f,(count)*sizeof(struct student),SEEK_SET);
+		fwrite(&stuList[count],sizeof(struct student),1,f);
+		fclose(f);
+		numberOfStudent = load();
 	}
 }
+//=================================================================================================
+
+
+
 int searchStudent(){// chạy thành công -- chờ nâng cấp ==============================================
 	char c;
 	scanf("%c",&c);
@@ -70,18 +101,20 @@ int searchStudent(){// chạy thành công -- chờ nâng cấp ================
 	return 1;
 	}
 	else{
-	system("clear");
+		system("clear");
+		int count;
+   		for (count =0; count < numberOfStudent; count++){
+			printStu(&stuList[count]);
+		}
 	char	ID[15];
 	int check = 0;
 	printf("Nhap ID:");gets(ID);
-	int count;
 	for (count = 0; count < numberOfStudent; count++)
 		if (strcmp(ID,stuList[count].ID) == 0){
 			printStu(&stuList[count]);
 			check = 1;
 		}
 	if (check == 0) printf("Not found");
-
 	}
 }
 //==================================================================================================
@@ -103,6 +136,7 @@ int addStudent(){// add thì mình thêm vào mảng listStudent và thêm vào 
 	printf("Phone number: ");gets(stu.phoneNumber);
 	fwrite(&stu,sizeof(stu),1,f);
 	printf("Add success!");
+	numberOfStudent = load();
 
 }
 int markSheet(){
