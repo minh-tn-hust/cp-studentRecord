@@ -16,17 +16,11 @@ int printStu(struct student *s){
 }
 //==================================================================================================================
 
-
-
 int load(){ // Đã chạy ổn định
 	f = fopen("student.txt","r+");
 	int count = 0;
-	if (f == NULL) printf("Loading fail\n");
+	if (f == NULL) printf("Loading that bai, file student.txt chua ton tai\n");
 	else {
-		// load thành công sẽ load thẳng vào mảng stuList để có thể sử dụng
-		// việc thêm + tìm kiếm và sắp xếp sẽ diễn ra trong mảng này
-		// còn việc chỉnh sửa và xóa sẽ thao tác trực tiếp trên fil
-		// e, để tối ưu số lần load thì có thể lưu lại vị trí 
 		printf("Succes loading\n");
 		s = getc(f);
 		fseek(f,0,SEEK_SET);
@@ -36,7 +30,7 @@ int load(){ // Đã chạy ổn định
 	return count;
 	}
 }
-int deleteRecord(){
+int deleteRecord(){// Phần này đã chạy ổn định==============================================================  
 	if (s == EOF) {
 	printf("Empty Database\n");
 	return 1;
@@ -50,9 +44,20 @@ int deleteRecord(){
 		scanf("%*c");
 		char ID[15];
 		printf("Nhap ID ban muon xong");gets(ID);
-
+		fclose(f);
+		f = fopen("student.txt","w");
+		fseek(f,0,SEEK_SET);
+		for (count = 0; count < numberOfStudent; count++){
+			if ( strcmp(ID,stuList[count].ID) == 0)
+				continue;
+			else
+				fwrite(&stuList[count],sizeof(struct student),1,f);
+		}
+		fclose(f);
+		numberOfStudent = load();
 	}
 }
+
 
 int modStudent(){// chạy ổn định, chưa thấy lỗi nào cả==========================================================
 	system("clear");
@@ -114,7 +119,7 @@ int searchStudent(){// chạy thành công -- chờ nâng cấp ================
 			printStu(&stuList[count]);
 			check = 1;
 		}
-	if (check == 0) printf("Not found");
+	if (check == 0) printf("Not found\n");
 	}
 }
 //==================================================================================================
@@ -136,6 +141,7 @@ int addStudent(){// add thì mình thêm vào mảng listStudent và thêm vào 
 	printf("Phone number: ");gets(stu.phoneNumber);
 	fwrite(&stu,sizeof(stu),1,f);
 	printf("Add success!");
+	fclose(f);
 	numberOfStudent = load();
 
 }
