@@ -26,47 +26,99 @@ WINDOW *create_selectedWin(int height, int width, int starty, int startx,char *s
 	return local_win;
 }
 int xyOfBox[4][2][2]={
-	{{1,0},{1,27}},
-	{{6,0},{6,27}},
-	{{11,0},{11,27}},
-	{{16,0},{16,27}},
+	{{4,2},{4,29}},
+	{{9,2},{9,29}},
+	{{14,2},{14,29}},
+	{{19,2},{19,29}},
 };
-		//printf("1. Add student\n");
-		//printf("2. Search Student\n");
-		//printf("3. Modify Student Record\n");
-		//printf("4. Generate Marksheet\n");
-		//printf("5. Delete Student Record\n");
-		//printf("6. Change Password\n");
-		//printf("7. Exit\n");
-		//printf("What do you want: ");
-
 char buttonLabel[4][2][30]={
 	{"1. Add student","2. Search Student"},
 	{"3. Modify Student Record","4. Generate Marksheet"},
 	{"5. Delete Student Record","6. Change Password"},
 	{"7. Exit","Have a nice day"},
 };
-int main(){
-	system("clear");
+void initWindow(){
 	WINDOW *win;
-	int width,height,startx,starty;
 	initscr();
 	cbreak();
-	height = 3;
-	width = 5;
-	startx = 1;
-	starty = 1;
 	refresh();
 	int count,count1;
+	char s[]="STUDENT RECORD";
+	attron(A_BOLD);
+	mvprintw(2,29-strlen(s)/2,"%s",s);
+	attroff(A_BOLD);
+	win = create_selectedWin(25,58,0,0,"");
 	for (count = 0; count < 4; count++)
 		for (count1 = 0; count1 < 2;count1++){
-			if (count==0&&count1==0) { win = create_selectedWin(5,27,xyOfBox[count][count1][0],xyOfBox[count][count1][1],buttonLabel[count][count1]); 
-			wrefresh(win);
-			continue;
+			if (count==0&&count1==0) { 
+				win = create_selectedWin(5,27,xyOfBox[count][count1][0],xyOfBox[count][count1][1],buttonLabel[count][count1]); 
+				wrefresh(win);
+				continue;
 			}
 			win = create_unselectedWin(5,27,xyOfBox[count][count1][0],xyOfBox[count][count1][1],buttonLabel[count][count1]);
 			wrefresh(win);
 		}
+}
+void menu(){
+	WINDOW *win;
+	int posy = 0,posx = 0;// posy,posx dùng làm biến để xác định trong trong mang xyOfBox, dùng để di chuyển 
+	int selected = 1;
+	int c;
+	while(c = getch()){
+		switch(c){
+			case '1':
+				win = create_unselectedWin(5,27,xyOfBox[posy][posx][0],xyOfBox[posy][posx][1],buttonLabel[posy][posx]); 
+				posy= 0;posx=0;
+				win = create_selectedWin(5,27,xyOfBox[posy][posx][0],xyOfBox[posy][posx][1],buttonLabel[posy][posx]); 
+				selected = 1;
+				break;
+			case '2':
+				win = create_unselectedWin(5,27,xyOfBox[posy][posx][0],xyOfBox[posy][posx][1],buttonLabel[posy][posx]); 
+				posy= 0;posx=1;
+				win = create_selectedWin(5,27,xyOfBox[posy][posx][0],xyOfBox[posy][posx][1],buttonLabel[posy][posx]); 
+				selected = 1;
+				break;
+			case '3':
+				win = create_unselectedWin(5,27,xyOfBox[posy][posx][0],xyOfBox[posy][posx][1],buttonLabel[posy][posx]); 
+				posy= 1;posx=0;
+				win = create_selectedWin(5,27,xyOfBox[posy][posx][0],xyOfBox[posy][posx][1],buttonLabel[posy][posx]); 
+				selected = 1;
+				break;
+			case '4':
+				win = create_unselectedWin(5,27,xyOfBox[posy][posx][0],xyOfBox[posy][posx][1],buttonLabel[posy][posx]); 
+				posy= 1;posx=1;
+				win = create_selectedWin(5,27,xyOfBox[posy][posx][0],xyOfBox[posy][posx][1],buttonLabel[posy][posx]); 
+				selected = 1;
+				break;
+			case '5':
+				win = create_unselectedWin(5,27,xyOfBox[posy][posx][0],xyOfBox[posy][posx][1],buttonLabel[posy][posx]); 
+				posy= 2;posx=0;
+				win = create_selectedWin(5,27,xyOfBox[posy][posx][0],xyOfBox[posy][posx][1],buttonLabel[posy][posx]); 
+				selected = 1;
+				break;
+			case '6':
+				win = create_unselectedWin(5,27,xyOfBox[posy][posx][0],xyOfBox[posy][posx][1],buttonLabel[posy][posx]); 
+				posy= 2;posx=1;
+				win = create_selectedWin(5,27,xyOfBox[posy][posx][0],xyOfBox[posy][posx][1],buttonLabel[posy][posx]); 
+				selected = 1;
+				break;
+			case '7':
+				win = create_unselectedWin(5,27,xyOfBox[posy][posx][0],xyOfBox[posy][posx][1],buttonLabel[posy][posx]); 
+				posy= 3;posx=0;
+				win = create_selectedWin(5,27,xyOfBox[posy][posx][0],xyOfBox[posy][posx][1],buttonLabel[posy][posx]); 
+				selected = 1;
+				break;
+		}	
+	}
+
+}
+int main(){
+	initscr();
+	cbreak();
+	keypad(stdscr,TRUE);
+	noecho();
+	initWindow();
+	menu();
 	getch();
 	endwin();
 
