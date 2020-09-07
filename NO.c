@@ -6,16 +6,19 @@
 typedef struct student{
 	char ID[15];
 	char NAME[30];
-	char ADDRESS[30];
+	char ADDRESS[50];
 	char PHONE[30];
 } stu;
-stu* addInfo(stu* info){
+void addInfo(){
+	stu *node = malloc(sizeof(stu));
+	FILE *f = fopen("student.txt","a+");
 	echo();
-	mvprintw(3,7,"");getstr(info->ID);
-	mvprintw(5,9,"");getstr(info->NAME);
-	mvprintw(7,12,"");getstr(info->ADDRESS);
-	mvprintw(9,17,"");getstr(info->PHONE);
-	return info;
+	mvprintw(3,7,"");getstr(node->ID);
+	mvprintw(5,9,"");getstr(node->NAME);
+	mvprintw(7,12,"");getstr(node->ADDRESS);
+	mvprintw(9,17,"");getstr(node->PHONE);
+	fwrite(node,sizeof(stu),1,f);
+	fclose(f);
 }
 void initWindow1st(){
 	WINDOW *win;
@@ -30,15 +33,30 @@ void initWindow1st(){
 	mvprintw(7,3,"ADDRESS:");
 	mvprintw(9,3,"PHONE NUMBER:");
 	attroff(A_BOLD|A_REVERSE);
-	stu *node = malloc(sizeof(stu));
-	addInfo(node);
-	printw("=%20s=%20s=%20s=%20s",node->ID,node->NAME,node->ADDRESS,node->PHONE);
-	FILE *f = fopen("student.txt","a+");
-	fwrite(node,sizeof(stu),1,f);
-	fclose(f);
+	addInfo();
 }
 // ===========================================================================================================================
 stu list[100];
+void drawRowUnselected(stu *node,int index){
+	WINDOW *win;
+	refresh();
+	win = create_unselectedWin(3,17,index*2+3,1,node->ID);
+	win = create_unselectedWin(3,32,index*2+3,18,node->NAME);
+	win = create_unselectedWin(3,52,index*2+3,50,node->ADDRESS);
+	win = create_unselectedWin(3,32,index*2+3,102,node->PHONE);
+	wrefresh(win);
+	
+}
+void drawRowSelected(stu *node,int index){
+	WINDOW *win;
+	refresh();
+	win = create_selectedWin(3,17,index*2+3,1,node->ID);
+	win = create_selectedWin(3,32,index*2+3,18,node->NAME);
+	win = create_selectedWin(3,52,index*2+3,50,node->ADDRESS);
+	win = create_selectedWin(3,32,index*2+3,102,node->PHONE);
+	wrefresh(win);
+	
+}
 void initWindow2nd(){
 	FILE *f = fopen("student.txt","r");
 	int count=0;
@@ -50,8 +68,23 @@ void initWindow2nd(){
 	WINDOW *win;
 	refresh();
 	int numberOfStu = count;
-	for (count =0; count < numberOfStu;count++)	
-		printw("==%20s==%20s==%20s==20s\n",list[count].ID,list[count].NAME,list[count].ADDRESS,list[count].PHONE);
+	char _2title[]="SEARCH STUDENT";
+	attron(A_BOLD|A_REVERSE);
+	mvprintw(1,(135-strlen(_2title))/2,_2title);
+	attroff(A_BOLD|A_REVERSE);
+	mvprintw(1,135-20,"ID: ");
+	win = create_selectedWin(numberOfStu*2+5,135,0,0,"");
+	for (count = 0; count < numberOfStu; count++)
+		drawRowUnselected(&list[count],count);
+	mvprintw(1,135-15,"");
+	echo();
+	char ID[15];
+	int checkID = 0;
+	getstr(ID);
+	for (count = 0; count < numberOfStu; count++)
+		if (strcmp(ID,list[count].ID)==0){
+			drawRowSelected(&list[count],count);			
+		}
 }
 //===========================================================================================================================
 void menu(){
@@ -61,6 +94,8 @@ void menu(){
 	int check=1;
 	while(c = getch()){
 		if (check == 0){
+			clear();
+			refresh();
 			initMenuWindow();
 			check = 1;
 		}
