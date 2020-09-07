@@ -32,8 +32,9 @@ void initWindow1st(){
 	attroff(A_BOLD|A_REVERSE);
 	stu *node = malloc(sizeof(stu));
 	addInfo(node);
-	FILE *f = fopen("student.txt","a");
-	fwrite(&node,sizeof(stu),1,f);
+	printw("=%20s=%20s=%20s=%20s",node->ID,node->NAME,node->ADDRESS,node->PHONE);
+	FILE *f = fopen("student.txt","a+");
+	fwrite(node,sizeof(stu),1,f);
 	fclose(f);
 }
 // ===========================================================================================================================
@@ -50,7 +51,7 @@ void initWindow2nd(){
 	refresh();
 	int numberOfStu = count;
 	for (count =0; count < numberOfStu;count++)	
-		printw("==%20s==%20s==%20s==%20s\n",list[count].ID,list[count].NAME,list[count].ADDRESS,list[count].PHONE);
+		printw("==%20s==%20s==%20s==20s\n",list[count].ID,list[count].NAME,list[count].ADDRESS,list[count].PHONE);
 }
 //===========================================================================================================================
 void menu(){
