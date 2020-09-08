@@ -60,6 +60,14 @@ void drawRowSelected(stu *node,int index){
 void initWindow2nd(){
 	FILE *f = fopen("student.txt","r");
 	int count=0;
+	if (f == NULL) {
+		clear();
+		refresh();
+		WINDOW *win;
+		char warning[]="NO DATASE.TXT - PLEASE CHECK YOUR FILE";
+		win = create_selectedWin(3,135,0,0,warning);
+	}
+	else{
 	while (fread(&list[count],sizeof(stu),1,f)){
 		count++;
 	}
@@ -85,6 +93,7 @@ void initWindow2nd(){
 		if (strcmp(ID,list[count].ID)==0){
 			drawRowSelected(&list[count],count);			
 		}
+	}
 }
 //===========================================================================================================================
 void menu(){
@@ -171,7 +180,7 @@ void menu(){
 					case 4:mvprintw(30,60,"Case 4: OK");break;
 					case 5:mvprintw(30,60,"Case 5: OK");break;
 					case 6:mvprintw(30,60,"Case 6: OK");break;
-					case 7:mvprintw(30,60,"Case 7: OK");break;
+					case 7:return 1;
 
 				}
 				
